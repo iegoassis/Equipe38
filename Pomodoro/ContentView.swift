@@ -8,4 +8,4 @@ import SwiftUI
 import Charts
 
 ///MARK: HomeView
-
+//Olá Mundo!
