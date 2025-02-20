@@ -1,15 +1,15 @@
 //
-//  SwiftUIView.swift
+//  RetanguloPomodoro.swift
 //  Pomodoro
 //
-//  Created by iredefbmac_20 on 09/01/25.
+//  Created by iredefbmac_20 on 15/02/25.
 //
 
 import SwiftUI
 
 struct RetanguloPomodoro: View {
     @Binding var isRunning: Bool
-    @Binding var timerValue: Int
+    @Binding var tempoPersonalizado: Int
     var body: some View {
         HStack{
             RoundedRectangle(cornerRadius: 15)
@@ -59,7 +59,7 @@ struct RetanguloPomodoro: View {
                         VStack{
                             Button(action:{
                             isRunning = false
-                            timerValue = 25 * 60
+                                tempoPersonalizado = 25 * 60
                         }){
                             ZStack{
                                 Circle()
@@ -83,5 +83,5 @@ struct RetanguloPomodoro: View {
 }
 
 #Preview {
-    RetanguloPomodoro(isRunning: .constant(false),timerValue: .constant(25*60))
+    RetanguloPomodoro(isRunning: .constant(false),tempoPersonalizado: .constant(25*60))
 }

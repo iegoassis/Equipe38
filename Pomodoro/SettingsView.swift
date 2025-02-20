@@ -6,68 +6,140 @@
 //
 import SwiftUI
 
-
-struct SettingsView: View{
+struct SettingsView: View {
     @State private var notificationsEnabled = true
-    @State private var selectedSound = "Chime"
-    @State private var selectedLanguage = "Portuguese"
+    @State private var selectedSound = "navi-song.mp3"
+    @State private var selectedLanguage = "Português"
     @State private var isDarkMode = false
-    
+
+    @State private var tempoPersonalizado: Int = 0
+    @State private var selectedPause = 10
+    @State private var selectedPomodoro = 25
+
+    let pauseOptions = [10, 5]
+    let pomodoroOptions = [25, 15, 10, 5]
+
     var body: some View {
-        VStack {
-            
-            Text(localizedString("settings"))
-                .font(.largeTitle)
-                .padding()
-            
-            Form {
-                Section(header: Text("Configurações de Tempo")) {
-                    HStack {
-                        Text("Tempo")
-                        Slider(value: .constant(25), in: 5...60)
+        NavigationView {
+            VStack {
+                Text("Configurações")
+                    .font(.pomodoroUI(.satoshiHeading1))
+                    .padding(.top, 20)
+
+                ScrollView {
+                    LazyVStack(alignment: .leading, spacing: 20) {
+                        pauseSettingsSection()
+                        pomodoroSettingsSection()
+                        languageSettingsSection()
+                        soundSettingsSection()
+                        toggleSettingsSection()
                     }
-                    HStack {
-                        Text("Intervalos")
-                        Slider(value: .constant(5), in: 1...15)
-                    }
-                }
-                
-                Section(header: Text("Notificações")) {
-                    Toggle("Habilitar notificações", isOn: $notificationsEnabled)
-                    Picker("Som de alerta", selection: $selectedSound) {
-                        Text("Chime").tag("Chime")
-                        Text("Bell").tag("Bell")
-                        Text("Buzz").tag("Buzz")
-                    }
-                }
-                
-                Section(header: Text(localizedString("language"))) {
-                    Picker(localizedString("language"), selection: $selectedLanguage) {
-                        Text("Portuguese").tag("Portuguese")
-                        Text("English").tag("English")
-                        Text("Spanish").tag("Spanish")
-                        Text("French").tag("French")
-                    }
-                }
-                
-                Section(header: Text("Tema")) {
-                    Toggle("Modo Escuro", isOn: $isDarkMode)
-                        .onChange(of: isDarkMode){
-                            value in
-                            if value{
-                                UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .dark
-                            }
-                            else{
-                                UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .light
-                            }
-                        }
+                    .padding()
                 }
             }
-            .preferredColorScheme(isDarkMode ? .dark: .light)
+            .preferredColorScheme(isDarkMode ? .dark : .light)
         }
     }
-    private func localizedString(_ key: String) -> String {
-        return NSLocalizedString(key, comment: "")
+
+    private func pauseSettingsSection() -> some View {
+        Section(header: Text("Pausas").font(.pomodoroUI(.satoshiHeading3))) {
+            HStack {
+                Spacer()
+                ForEach(pauseOptions, id: \.self) { option in
+                    pauseButton(for: option)
+                }
+                Spacer()
+            }
+        }
+    }
+
+    private func pauseButton(for option: Int) -> some View {
+        Button(action: {
+            selectedPause = option
+        }) {
+            Text("\(option)\nminutos")
+                .font(.pomodoroUI(.satoshiBody2Medium))
+                .foregroundColor(selectedPause == option ? .white : .black)
+                .frame(width: 75, height: 75)
+                .background(selectedPause == option ? Color.blue : Color.gray.opacity(0.2))
+                .cornerRadius(10)
+        }
+    }
+
+    private func pomodoroSettingsSection() -> some View {
+        Section(header: Text("Tempo do pomodoro").font(.pomodoroUI(.satoshiHeading3))) {
+            HStack {
+                Spacer()
+                ForEach(pomodoroOptions, id: \.self) { option in
+                    pomodoroButton(for: option)
+                }
+                Spacer()
+            }
+        }
+    }
+
+    private func pomodoroButton(for option: Int) -> some View {
+        Button(action: {
+            selectedPomodoro = option
+            showPomodoro(minutes: option)
+        }) {
+            Text("\(option)\nminutos")
+                .font(.pomodoroUI(.satoshiBody2Medium))
+                .foregroundColor(selectedPomodoro == option ? .white : .black)
+                .frame(width: 75, height: 75)
+                .background(selectedPomodoro == option ? Color.blue : Color.gray.opacity(0.2))
+                .cornerRadius(10)
+        }
+    }
+
+    private func languageSettingsSection() -> some View {
+        Section {
+            HStack {
+                Text("Idioma")
+                    .font(.pomodoroUI(.satoshiHeading3))
+                Spacer()
+                Picker("Idioma", selection: $selectedLanguage) {
+                    Text("Português").tag("Português")
+                    Text("Inglês").tag("Inglês")
+                }
+                .pickerStyle(MenuPickerStyle())
+            }
+        }
+    }
+
+    private func soundSettingsSection() -> some View {
+        Section {
+            HStack {
+                Text("Som de Alerta")
+                    .font(.pomodoroUI(.satoshiHeading3))
+                Spacer()
+                Text(selectedSound)
+                Spacer()
+                Button(action: {}) {
+                    Image(systemName: "square.and.arrow.down")
+                }
+            }
+        }
+    }
+
+    private func toggleSettingsSection() -> some View {
+        Section {
+            Toggle("Notificações", isOn: $notificationsEnabled)
+                .font(.pomodoroUI(.satoshiHeading3))
+            Toggle("Modo escuro", isOn: $isDarkMode)
+                .font(.pomodoroUI(.satoshiHeading3))
+                .onChange(of: isDarkMode) { value in
+                    if value {
+                        UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .dark
+                    } else {
+                        UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .light
+                    }
+                }
+        }
+    }
+
+    func showPomodoro(minutes: Int) {
+        tempoPersonalizado = minutes
     }
 }
 

@@ -70,6 +70,9 @@ struct Template: View{
                 BarMark(x: .value("Dia", formatDate(point.day)), y: .value("Ciclos",point.ciclos))
                 
             }
+            .chartYAxis {
+                AxisMarks(position: .leading) // Isso move os rótulos para a esquerda
+            }
             .frame(height:300)
             Text("Gráfico de desempenho")
                 .fontWeight(.bold)

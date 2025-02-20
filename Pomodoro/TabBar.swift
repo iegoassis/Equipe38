@@ -16,13 +16,13 @@ struct TabBar: View{
         PomodoroPoint(day: Date().addingTimeInterval(259200), ciclos: 8),
         PomodoroPoint(day: Date().addingTimeInterval(345600), ciclos: 1)]
     @State private var isRunning = false
-    @State private var timerValue = 25*60
+    @State private var tempoPersonalizado: Int = 25
     //Array(repeating: PomodoroPoint(day:Date(),ciclos: 0),count: 7)
     var body: some View {
         TabView{
-            HomeView(ciclos: $ciclos, cicloDiario: $cicloDiario,isRunning: $isRunning,timerValue: $timerValue)
+            HomeView(ciclos: $ciclos, cicloDiario: $cicloDiario,isRunning: $isRunning,tempoPersonalizado: $tempoPersonalizado)
                 .tabItem {
-                    Label("Home", systemImage: "house")
+                    Label("Pomodoro", systemImage: "timer")
                 }
             
             Template(ciclos: ciclos, cicloDiario: cicloDiario)
