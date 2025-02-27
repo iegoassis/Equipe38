@@ -11,6 +11,7 @@ struct HomeView: View {
     @Binding var cicloDiario: [PomodoroPoint]
     @Binding var isRunning: Bool
     @Binding var tempoPersonalizado: Int
+    @Binding var pausaPersonalizada: Int
     @State private var completedCycles: [String] = []
     @State private var tempoInicial: Int = 0
 

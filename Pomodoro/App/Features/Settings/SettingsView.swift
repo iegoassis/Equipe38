@@ -13,8 +13,11 @@ struct SettingsView: View {
     @State private var isDarkMode = false
 
     @State private var tempoPersonalizado: Int = 0
+    @State private var pausaPersonalizada: Int = 0
     @State private var selectedPause = 10
     @State private var selectedPomodoro = 25
+    
+    @Binding var timerManager: TimerManager
 
     let pauseOptions = [10, 5]
     let pomodoroOptions = [25, 15, 10, 5]
@@ -56,9 +59,14 @@ struct SettingsView: View {
     private func pauseButton(for option: Int) -> some View {
         Button(action: {
             selectedPause = option
+            showPomodoro(minutes: option)
+            
+            timerManager.initialTime = Double(option * 60)
+            timerManager.resetTimer()
         }) {
             Text("\(option)\nminutos")
                 .font(.pomodoroUI(.satoshiBody2Medium))
+                .bold()
                 .foregroundColor(selectedPause == option ? .white : .black)
                 .frame(width: 75, height: 75)
                 .background(selectedPause == option ? Color.blue : Color.gray.opacity(0.2))
@@ -82,6 +90,9 @@ struct SettingsView: View {
         Button(action: {
             selectedPomodoro = option
             showPomodoro(minutes: option)
+            
+            timerManager.initialTime = Double(option * 60)
+            timerManager.resetTimer()
         }) {
             Text("\(option)\nminutos")
                 .font(.pomodoroUI(.satoshiBody2Medium))
@@ -140,6 +151,7 @@ struct SettingsView: View {
 
     func showPomodoro(minutes: Int) {
         tempoPersonalizado = minutes
+        pausaPersonalizada = minutes
     }
 }
 
