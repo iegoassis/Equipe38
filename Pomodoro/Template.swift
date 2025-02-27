@@ -12,8 +12,6 @@ struct Template: View{
     var cicloDiario: [PomodoroPoint]
     var body: some View {
         
-        var body: some View {
-        
         VStack {
             Text("Estatísticas")
                 .font(.pomodoroUI(.satoshiHeading1))
@@ -65,32 +63,6 @@ struct Template: View{
                 }
                 .padding()
             }
-            
-            Spacer()
-            Chart(cicloDiario){ point in
-                BarMark(x: .value("Dia", formatDate(point.day)), y: .value("Ciclos",point.ciclos))
-                
-            }
-            .chartYAxis {
-                AxisMarks(position: .leading) // Isso move os rótulos para a esquerda
-            }
-            .frame(height:300)
-            Text("Gráfico de desempenho")
-                .fontWeight(.bold)
-                .padding()
-                .background(Color.blue)
-                .cornerRadius(8)
-                .foregroundColor(Color.white)
-        }
-        .padding()
-    }
-    private func formatDate(_ inputDate : Date) -> String{
-        let formatter = DateFormatter()
-        formatter.dateFormat = "dd/MM"
-        return formatter.string(from: inputDate)
-    }
-}
-
             
             Spacer()
             Chart(cicloDiario){ point in
