@@ -65,6 +65,9 @@ struct Template: View{
             }
             
             Spacer()
+            Text("Semanal")
+                .font(.pomodoroUI(.satoshiHeading3))
+                .frame(maxWidth: .infinity,alignment: .leading)
             Chart(cicloDiario){ point in
                 BarMark(x: .value("Dia", formatDate(point.day)), y: .value("Ciclos",point.ciclos))
                 

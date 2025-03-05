@@ -62,7 +62,6 @@ struct SettingsView: View {
             showPomodoro(minutes: option)
             
             timerManager.initialTime = Double(option * 60)
-            timerManager.resetTimer()
         }) {
             Text("\(option)\nminutos")
                 .font(.pomodoroUI(.satoshiBody2Medium))
