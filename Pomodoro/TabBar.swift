@@ -27,7 +27,7 @@ struct TabBar: View{
                     Label("Pomodoro", systemImage: "timer")
                 }
             
-            Template(ciclos: ciclos, cicloDiario: cicloDiario)
+            Template(ciclos: ciclos, cicloDiario: cicloDiario,timerManager: $timerManager)
                 .tabItem {
                     Label("Estatísticas", systemImage: "chart.bar")
                 }

@@ -10,6 +10,7 @@ import Charts
 struct Template: View{
     var ciclos: Int
     var cicloDiario: [PomodoroPoint]
+    @Binding var timerManager: TimerManager
     var body: some View {
         
         VStack {
@@ -36,7 +37,7 @@ struct Template: View{
                             Text("Ciclos completos")
                                 .font(.pomodoroUI(.satoshiBody2Medium))
                                 .foregroundColor(.white)
-                            Text("\(ciclos)")
+                            Text("\(timerManager.cicloFinalizou)")
                                 .font(.pomodoroUI(.satoshiBody1Medium))
                                 .foregroundColor(.white)
                             

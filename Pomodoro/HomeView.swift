@@ -12,6 +12,8 @@ struct HomeView: View {
     @Binding var isRunning: Bool
     @Binding var tempoPersonalizado: Int
     @Binding var pausaPersonalizada: Int
+    @Binding var timerManager: TimerManager // Agora observável
+
     @State private var completedCycles: [String] = []
     @State private var tempoInicial: Int = 0
 
@@ -30,7 +32,7 @@ struct HomeView: View {
             
             RetanguloPomodoro(isRunning: $isRunning, tempoPersonalizado: $tempoPersonalizado)
             
-            Text("Ciclos completos:")
+            Text("Ciclos completos: \(completedCycles.count)") // Atualiza com os ciclos reais
                 .padding(.top)
                 .font(.pomodoroUI(.satoshiHeading1))
             
@@ -43,19 +45,12 @@ struct HomeView: View {
         }
         .padding()
         .onAppear {
-            tempoInicial = tempoPersonalizado // Armazenar o tempo inicial ao carregar a tela
+            timerManager.initialTime = TimeInterval(tempoPersonalizado)
+            timerManager.resetTimer()
+            tempoInicial = tempoPersonalizado
         }
-        .onReceive(Timer.publish(every: 1, on: .main, in: .common).autoconnect()) { _ in
-            if isRunning && tempoPersonalizado > 0 {
-                tempoPersonalizado -= 1
-            } else if isRunning && tempoPersonalizado == 0 {
-                completedCycles.append("Ciclo Completo!")
-                tempoPersonalizado = tempoInicial // Reinicia para o tempo inicial configurado
-                ciclos += 1
-                
-                let indexAtual = Calendar.current.component(.day, from: Date()) % 7
-                cicloDiario[indexAtual].ciclos += 1
-            }
+        .onChange(of: timerManager.cicloFinalizou) { novoValor in
+            completedCycles.append("Ciclo \(novoValor) concluído em \(Date())")
         }
     }
 
@@ -69,5 +64,6 @@ struct HomeView: View {
 #Preview {
     TabBar()
 }
+
 
 // Retângulo com os botões de controle

@@ -20,7 +20,7 @@ struct SettingsView: View {
     @Binding var timerManager: TimerManager
 
     let pauseOptions = [10, 5]
-    let pomodoroOptions = [25, 15, 10, 5]
+    let pomodoroOptions = [25, 15, 10, 1]
 
     var body: some View {
         NavigationView {
@@ -154,3 +154,34 @@ struct SettingsView: View {
     }
 }
 
+
+
+class TimerViewModel{
+    enum timeTypes{
+        case atividade,descanso
+    }
+    var estadoTimer: timeTypes = .atividade
+    private var timer: TimerManager = .init(initialTime: 100)
+    
+    var tempoAtividade: Double = 100
+    var tempoDescanso: Double = 10
+    
+    func mudarEstadoTimer(){
+        switch estadoTimer{
+           case .atividade:
+               estadoTimer = .descanso
+               timer.stopTimer()
+               timer = TimerManager(initialTime: tempoDescanso)
+           case .descanso:
+               estadoTimer = .atividade
+               timer.stopTimer()
+               timer = TimerManager(initialTime: tempoAtividade)
+        }
+    }
+    func resetarTimer(){
+        timer.resetTimer()
+    }
+    func getTimer() -> TimerManager{
+        return timer
+    }
+}
