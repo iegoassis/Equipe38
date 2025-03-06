@@ -13,13 +13,17 @@ class TimerManager {
     var timeRemaining: TimeInterval
     var timer: Timer?
     var isPaused: Bool = true
+    var statusAtual: TimerStatus = .foco
     var formatedTime: String {
         let time = Int(timeRemaining)
         let minutes = time / 60
         let seconds = time % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-
+    enum TimerStatus{
+        case descanso
+        case foco
+    }
     init(initialTime: TimeInterval) {
         self.initialTime = initialTime
         self.timeRemaining = initialTime
@@ -42,7 +46,7 @@ class TimerManager {
             }
         } else {
             pauseUnpause()
-//            stopTimer()
+            timerCore()
         }
     }
 
@@ -62,4 +66,16 @@ class TimerManager {
     func pauseUnpause() {
         isPaused.toggle()
     }
+    
+    func timerCore(){
+        if statusAtual == .foco{
+            statusAtual = .descanso
+            initialTime = (pausaPersonalizada * 60)
+        }
+        else if statusAtual == .descanso{
+            statusAtual = .foco
+            initialTime = (tempoPersonalizado * 60)
+        }
+    }
 }
+
