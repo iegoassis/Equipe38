@@ -6,7 +6,8 @@
 //
 import SwiftUI
 struct TabBar: View{
-    @State var timerManager = TimerManager(initialTime: 20)
+    @State var timerViewModel = TimerViewModel()
+    @State var timerManager: TimerManager
     
     @State private var ciclos: Int = 0
     @State private var cicloDiario: [PomodoroPoint] = [
@@ -19,6 +20,12 @@ struct TabBar: View{
         PomodoroPoint(day: Date().addingTimeInterval(345600), ciclos: 1)]
     @State private var isRunning = false
     @State private var tempoPersonalizado: Int = 25
+    
+    init() {
+           let viewModel = TimerViewModel()
+           _timerViewModel = State(wrappedValue: viewModel)
+           _timerManager = State(wrappedValue: TimerManager(initialTime: 20, timerViewModel: viewModel))
+       }
     //Array(repeating: PomodoroPoint(day:Date(),ciclos: 0),count: 7)
     var body: some View {
         TabView{

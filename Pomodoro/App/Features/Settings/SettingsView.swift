@@ -157,11 +157,12 @@ struct SettingsView: View {
 
 
 class TimerViewModel{
+    let timerViewModel = TimerViewModel
     enum timeTypes{
         case atividade,descanso
     }
     var estadoTimer: timeTypes = .atividade
-    private var timer: TimerManager = .init(initialTime: 100)
+    private var timer: TimerManager = .init(initialTime: 100,timerViewModel: <#T##TimerViewModel#>)
     
     var tempoAtividade: Double = 100
     var tempoDescanso: Double = 10
@@ -171,11 +172,11 @@ class TimerViewModel{
            case .atividade:
                estadoTimer = .descanso
                timer.stopTimer()
-               timer = TimerManager(initialTime: tempoDescanso)
+            timer = TimerManager(initialTime: tempoDescanso,timerViewModel: <#T##TimerViewModel#>)
            case .descanso:
                estadoTimer = .atividade
                timer.stopTimer()
-               timer = TimerManager(initialTime: tempoAtividade)
+            timer = TimerManager(initialTime: tempoAtividade,timerViewModel: <#T##TimerViewModel#>)
         }
     }
     func resetarTimer(){

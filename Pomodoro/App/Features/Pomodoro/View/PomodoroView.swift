@@ -70,5 +70,7 @@ struct PomodoroView: View {
 }
 
 #Preview {
-    PomodoroView(timerManager: .constant(.init(initialTime: 20)))
+    let viewModel = TimerViewModel()
+    let timerManager = TimerManager(initialTime: 20, timerViewModel: viewModel)
+    return PomodoroView(timerManager: .constant(timerManager))
 }

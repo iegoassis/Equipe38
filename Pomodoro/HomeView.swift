@@ -12,7 +12,7 @@ struct HomeView: View {
     @Binding var isRunning: Bool
     @Binding var tempoPersonalizado: Int
     @Binding var pausaPersonalizada: Int
-    @Binding var timerManager: TimerManager // Agora observável
+    @Binding var timerManager: TimerManager
 
     @State private var completedCycles: [String] = []
     @State private var tempoInicial: Int = 0

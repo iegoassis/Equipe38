@@ -18,7 +18,7 @@ class TimerManager {
     var cicloDiario: [PomodoroPoint] = []
 
     var cicloFinalizou: Int = 0  // Agora pode ser observado
-
+    var TimerViewModel: TimerViewModel
     var formatedTime: String {
         let time = Int(timeRemaining)
         let minutes = time / 60
@@ -26,9 +26,10 @@ class TimerManager {
         return String(format: "%02d:%02d", minutes, seconds)
     }
 
-    init(initialTime: TimeInterval) {
+    init(initialTime: TimeInterval,timerViewModel: TimerViewModel) {
         self.initialTime = initialTime
         self.timeRemaining = initialTime
+        self.TimerViewModel = timerViewModel
     }
 
     func startTimer() {
@@ -75,9 +76,11 @@ class TimerManager {
     }
     
     func novoCiclo() {
-        cicloFinalizou += 1
-        ciclos += 1
-                        
+        TimerViewModel.mudarEstadoTimer()
+        if TimerViewModel.estadoTimer == .descanso{
+            cicloFinalizou += 1
+            ciclos += 1
+        }
         let indexAtual = Calendar.current.component(.day, from: Date()) % 7
         if indexAtual < cicloDiario.count {
             cicloDiario[indexAtual].ciclos += 1
