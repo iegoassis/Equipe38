@@ -9,7 +9,7 @@ import SwiftUI
 struct PomodoroView: View {
     @State private var height: CGFloat?
     @State private var solarRayViewModel: SolarRayViewModel  = .init(subdivisions: 8)
-
+    
     @Binding var timerManager: TimerManager
     
     var body: some View {
@@ -17,6 +17,7 @@ struct PomodoroView: View {
             Text("Pomodoro")
                 .font(.custom("Satoshi-Bold", size: 32))
                 .padding(.bottom, 100)
+            
             ZStack {
                 ForEach($solarRayViewModel.rays) { ray in
                     SolarRays(height: height ?? 10, timeRemaining: Int(timerManager.timeRemaining), totalTime: Int(timerManager.initialTime), solarRayModel: ray)
@@ -29,25 +30,23 @@ struct PomodoroView: View {
                             .clipShape(Circle())
                     }
                 
-                Text(timerManager.formatedTime)
+                Text(timerManager.formattedTime) // Corrigido aqui
                     .font(.custom("Satoshi-Bold", size: 48))
                     .foregroundStyle(.white)
                 
                 HStack(spacing: 50) {
                     ButtonStyle(name: timerManager.isPaused ? "Iniciar" : "Pausar", iconName: timerManager.isPaused ? "play.fill" : "pause.fill") {
-                        checkTimer()
+                        toggleTimer()
                     }
                     .offset(y: 300)
                     
                     ButtonStyle(name: "Reiniciar", iconName: "arrow.counterclockwise") {
                         if !timerManager.isPaused {
-                            timerManager.pauseUnpause()
+                            timerManager.stopTimer()
                         }
                         timerManager.resetTimer()
                     }
                     .offset(y: 300)
-                    
-                    
                 }
             }
             Spacer()
@@ -57,7 +56,7 @@ struct PomodoroView: View {
         }
     }
     
-    func checkTimer() {
+    func toggleTimer() {
         if timerManager.timeRemaining <= 0 {
             timerManager.resetTimer()
             for i in 0..<solarRayViewModel.rays.count {
@@ -65,12 +64,16 @@ struct PomodoroView: View {
             }
         }
         
-        timerManager.pauseUnpause() // Alterna entre pausar e retomar o timer
+        if timerManager.isPaused {
+            timerManager.startTimer()
+        } else {
+            timerManager.stopTimer()
+        }
     }
 }
 
 #Preview {
-    let viewModel = TimerViewModel()
-    let timerManager = TimerManager(initialTime: 20, timerViewModel: viewModel)
+    let timerManager = TimerManager(initialTime: 20) // Removido TimerViewModel
     return PomodoroView(timerManager: .constant(timerManager))
 }
+

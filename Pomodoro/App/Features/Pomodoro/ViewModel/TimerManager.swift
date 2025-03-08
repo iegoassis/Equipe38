@@ -8,88 +8,50 @@
 import SwiftUI
 import Combine
 
-@Observable
-class TimerManager {
-    var initialTime: TimeInterval
-    var timeRemaining: TimeInterval
-    var timer: Timer?
-    var isPaused: Bool = true
-    var ciclos: Int = 0
-    var cicloDiario: [PomodoroPoint] = []
-
-    var cicloFinalizou: Int = 0  // Agora pode ser observado
-    var TimerViewModel: TimerViewModel
-    var formatedTime: String {
+class TimerManager: ObservableObject {
+    @Published var initialTime: TimeInterval
+    @Published var timeRemaining: TimeInterval
+    @Published var isPaused: Bool = true
+    @Published var ciclos: Int = 0
+    private var timer: Timer?
+    
+    var formattedTime: String {
         let time = Int(timeRemaining)
         let minutes = time / 60
         let seconds = time % 60
         return String(format: "%02d:%02d", minutes, seconds)
     }
-
-    init(initialTime: TimeInterval,timerViewModel: TimerViewModel) {
+    
+    init(initialTime: TimeInterval) {
         self.initialTime = initialTime
         self.timeRemaining = initialTime
-        self.TimerViewModel = timerViewModel
     }
-
+    
     func startTimer() {
-        timer?.invalidate()
-        timer = Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { [weak self] _ in
-            if !(self?.isPaused ?? false) {
-                self?.tick()
-                print(self?.timeRemaining ?? -1)
-            }
+        stopTimer()
+        isPaused = false
+        timer = Timer.scheduledTimer(withTimeInterval: 1, repeats: true) { [weak self] _ in
+            self?.tick()
         }
     }
-
+    
     private func tick() {
         if timeRemaining > 0 {
-            withAnimation {
-                timeRemaining -= 0.1
-            }
+            timeRemaining -= 1
         } else {
-            pauseUnpause()
+            resetTimer()
         }
     }
-
-    func appendTime(additionalTime: TimeInterval) {
-        timeRemaining += additionalTime
-    }
-
+    
     func stopTimer() {
+        isPaused = true
         timer?.invalidate()
         timer = nil
     }
     
     func resetTimer() {
-        cicloFinalizou += 1 // Notifica a UI
+        stopTimer()
         timeRemaining = initialTime
-    }
-    
-    func pauseUnpause() {
-        isPaused.toggle()
-        if !isPaused {
-            startTimer()
-        } else {
-            stopTimer()
-        }
-    }
-    
-    func novoCiclo() {
-        TimerViewModel.mudarEstadoTimer()
-        if TimerViewModel.estadoTimer == .descanso{
-            cicloFinalizou += 1
-            ciclos += 1
-        }
-        let indexAtual = Calendar.current.component(.day, from: Date()) % 7
-        if indexAtual < cicloDiario.count {
-            cicloDiario[indexAtual].ciclos += 1
-        }
-        
-        resetTimer()
     }
 }
 
-#Preview {
-    TabBar()
-}

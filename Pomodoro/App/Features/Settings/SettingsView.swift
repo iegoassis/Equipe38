@@ -11,9 +11,7 @@ struct SettingsView: View {
     @State private var selectedSound = "navi-song.mp3"
     @State private var selectedLanguage = "Português"
     @State private var isDarkMode = false
-
-    @State private var tempoPersonalizado: Int = 0
-    @State private var pausaPersonalizada: Int = 0
+    
     @State private var selectedPause = 10
     @State private var selectedPomodoro = 25
     
@@ -26,9 +24,9 @@ struct SettingsView: View {
         NavigationView {
             VStack {
                 Text("Configurações")
-                    .font(.pomodoroUI(.satoshiHeading1))
+                    .font(.title)
                     .padding(.top, 20)
-
+                
                 ScrollView {
                     LazyVStack(alignment: .leading, spacing: 20) {
                         pauseSettingsSection()
@@ -45,10 +43,10 @@ struct SettingsView: View {
     }
 
     private func pauseSettingsSection() -> some View {
-        Section(header: Text("Pausas").font(.pomodoroUI(.satoshiHeading3))) {
+        Section(header: Text("Pausas").font(.headline)) {
             HStack {
                 Spacer()
-                ForEach(pauseOptions, id: \.self) { option in
+                ForEach(pauseOptions, id: \ .self) { option in
                     pauseButton(for: option)
                 }
                 Spacer()
@@ -59,12 +57,9 @@ struct SettingsView: View {
     private func pauseButton(for option: Int) -> some View {
         Button(action: {
             selectedPause = option
-            showPomodoro(minutes: option)
-            
             timerManager.initialTime = Double(option * 60)
         }) {
             Text("\(option)\nminutos")
-                .font(.pomodoroUI(.satoshiBody2Medium))
                 .bold()
                 .foregroundColor(selectedPause == option ? .white : .black)
                 .frame(width: 75, height: 75)
@@ -74,10 +69,10 @@ struct SettingsView: View {
     }
 
     private func pomodoroSettingsSection() -> some View {
-        Section(header: Text("Tempo do pomodoro").font(.pomodoroUI(.satoshiHeading3))) {
+        Section(header: Text("Tempo do pomodoro").font(.headline)) {
             HStack {
                 Spacer()
-                ForEach(pomodoroOptions, id: \.self) { option in
+                ForEach(pomodoroOptions, id: \ .self) { option in
                     pomodoroButton(for: option)
                 }
                 Spacer()
@@ -88,13 +83,10 @@ struct SettingsView: View {
     private func pomodoroButton(for option: Int) -> some View {
         Button(action: {
             selectedPomodoro = option
-            showPomodoro(minutes: option)
-            
             timerManager.initialTime = Double(option * 60)
             timerManager.resetTimer()
         }) {
             Text("\(option)\nminutos")
-                .font(.pomodoroUI(.satoshiBody2Medium))
                 .foregroundColor(selectedPomodoro == option ? .white : .black)
                 .frame(width: 75, height: 75)
                 .background(selectedPomodoro == option ? Color.blue : Color.gray.opacity(0.2))
@@ -105,8 +97,7 @@ struct SettingsView: View {
     private func languageSettingsSection() -> some View {
         Section {
             HStack {
-                Text("Idioma")
-                    .font(.pomodoroUI(.satoshiHeading3))
+                Text("Idioma").font(.headline)
                 Spacer()
                 Picker("Idioma", selection: $selectedLanguage) {
                     Text("Português").tag("Português")
@@ -120,8 +111,7 @@ struct SettingsView: View {
     private func soundSettingsSection() -> some View {
         Section {
             HStack {
-                Text("Som de Alerta")
-                    .font(.pomodoroUI(.satoshiHeading3))
+                Text("Som de Alerta").font(.headline)
                 Spacer()
                 Text(selectedSound)
                 Spacer()
@@ -135,54 +125,10 @@ struct SettingsView: View {
     private func toggleSettingsSection() -> some View {
         Section {
             Toggle("Notificações", isOn: $notificationsEnabled)
-                .font(.pomodoroUI(.satoshiHeading3))
             Toggle("Modo escuro", isOn: $isDarkMode)
-                .font(.pomodoroUI(.satoshiHeading3))
                 .onChange(of: isDarkMode) { value in
-                    if value {
-                        UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .dark
-                    } else {
-                        UIApplication.shared.windows.first?.overrideUserInterfaceStyle = .light
-                    }
+                    UIApplication.shared.windows.first?.overrideUserInterfaceStyle = value ? .dark : .light
                 }
         }
-    }
-
-    func showPomodoro(minutes: Int) {
-        tempoPersonalizado = minutes
-        pausaPersonalizada = minutes
-    }
-}
-
-
-
-class TimerViewModel{
-    let timerViewModel = TimerViewModel
-    enum timeTypes{
-        case atividade,descanso
-    }
-    var estadoTimer: timeTypes = .atividade
-    private var timer: TimerManager = .init(initialTime: 100,timerViewModel: <#T##TimerViewModel#>)
-    
-    var tempoAtividade: Double = 100
-    var tempoDescanso: Double = 10
-    
-    func mudarEstadoTimer(){
-        switch estadoTimer{
-           case .atividade:
-               estadoTimer = .descanso
-               timer.stopTimer()
-            timer = TimerManager(initialTime: tempoDescanso,timerViewModel: <#T##TimerViewModel#>)
-           case .descanso:
-               estadoTimer = .atividade
-               timer.stopTimer()
-            timer = TimerManager(initialTime: tempoAtividade,timerViewModel: <#T##TimerViewModel#>)
-        }
-    }
-    func resetarTimer(){
-        timer.resetTimer()
-    }
-    func getTimer() -> TimerManager{
-        return timer
     }
 }

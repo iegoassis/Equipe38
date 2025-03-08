@@ -37,7 +37,7 @@ struct Template: View{
                             Text("Ciclos completos")
                                 .font(.pomodoroUI(.satoshiBody2Medium))
                                 .foregroundColor(.white)
-                            Text("\(timerManager.cicloFinalizou)")
+                            Text("\(timerManager.ciclos)")
                                 .font(.pomodoroUI(.satoshiBody1Medium))
                                 .foregroundColor(.white)
                             

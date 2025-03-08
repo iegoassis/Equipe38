@@ -30,7 +30,7 @@ struct CircleView: View {
 
 #Preview {
     let viewModel = TimerViewModel()
-    CircleView(timerManager: .constant(.init(initialTime: 20, timerViewModel: viewModel)), height: .constant(10))
+    CircleView(timerManager: .constant(.init(initialTime: 20)), height: .constant(10))
         .background {
             Color.yellow
                 .clipShape(Circle())

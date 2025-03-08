@@ -24,7 +24,7 @@ struct TabBar: View{
     init() {
            let viewModel = TimerViewModel()
            _timerViewModel = State(wrappedValue: viewModel)
-           _timerManager = State(wrappedValue: TimerManager(initialTime: 20, timerViewModel: viewModel))
+           _timerManager = State(wrappedValue: TimerManager(initialTime: 20))
        }
     //Array(repeating: PomodoroPoint(day:Date(),ciclos: 0),count: 7)
     var body: some View {

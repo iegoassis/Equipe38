@@ -13,7 +13,7 @@ struct HomeView: View {
     @Binding var tempoPersonalizado: Int
     @Binding var pausaPersonalizada: Int
     @Binding var timerManager: TimerManager
-
+    @Binding var contarTempo: ContarTempo
     @State private var completedCycles: [String] = []
     @State private var tempoInicial: Int = 0
 
@@ -49,7 +49,7 @@ struct HomeView: View {
             timerManager.resetTimer()
             tempoInicial = tempoPersonalizado
         }
-        .onChange(of: timerManager.cicloFinalizou) { novoValor in
+        .onChange(of: $contarTempo.contarCiclos) { novoValor in
             completedCycles.append("Ciclo \(novoValor) concluído em \(Date())")
         }
     }
