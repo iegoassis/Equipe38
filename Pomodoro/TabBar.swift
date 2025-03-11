@@ -6,9 +6,9 @@
 //
 import SwiftUI
 struct TabBar: View{
-    @State var timerViewModel = TimerViewModel()
-    @State var timerManager: TimerManager
-    
+    @StateObject var timerViewModel = TimerViewModel()
+    @StateObject var timerManager: TimerManager = TimerManager(initialTime: 20)
+    @StateObject var contarTempo: ContarTempo
     @State private var ciclos: Int = 0
     @State private var cicloDiario: [PomodoroPoint] = [
         PomodoroPoint(day: Date().addingTimeInterval(-172800), ciclos: 7),
@@ -20,26 +20,20 @@ struct TabBar: View{
         PomodoroPoint(day: Date().addingTimeInterval(345600), ciclos: 1)]
     @State private var isRunning = false
     @State private var tempoPersonalizado: Int = 25
-    
-    init() {
-           let viewModel = TimerViewModel()
-           _timerViewModel = State(wrappedValue: viewModel)
-           _timerManager = State(wrappedValue: TimerManager(initialTime: 20))
-       }
     //Array(repeating: PomodoroPoint(day:Date(),ciclos: 0),count: 7)
     var body: some View {
         TabView{
-            PomodoroView(timerManager: $timerManager)
+            PomodoroView(timerManager: timerManager,contarTempo: contarTempo, timerViewModel: timerViewModel)
                 .tabItem {
                     Label("Pomodoro", systemImage: "timer")
                 }
             
-            Template(ciclos: ciclos, cicloDiario: cicloDiario,timerManager: $timerManager)
+            Template(ciclos: ciclos, cicloDiario: cicloDiario,timerManager: timerManager,contarTempo: contarTempo)
                 .tabItem {
                     Label("Estatísticas", systemImage: "chart.bar")
                 }
             
-            SettingsView(timerManager: $timerManager)
+            SettingsView(timerManager: timerManager)
                 .tabItem {
                     Label("Configurações", systemImage: "gear")
                 }
@@ -47,5 +41,5 @@ struct TabBar: View{
     }
 }
 #Preview {
-    TabBar()
+    TabBar(contarTempo: ContarTempo(timerViewModel: TimerViewModel()))
 }

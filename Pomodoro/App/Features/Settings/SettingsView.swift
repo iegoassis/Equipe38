@@ -15,7 +15,8 @@ struct SettingsView: View {
     @State private var selectedPause = 10
     @State private var selectedPomodoro = 25
     
-    @Binding var timerManager: TimerManager
+    @ObservedObject var timerManager: TimerManager
+    @Environment(\.colorScheme) var colorScheme
 
     let pauseOptions = [10, 5]
     let pomodoroOptions = [25, 15, 10, 1]
@@ -46,7 +47,7 @@ struct SettingsView: View {
         Section(header: Text("Pausas").font(.headline)) {
             HStack {
                 Spacer()
-                ForEach(pauseOptions, id: \ .self) { option in
+                ForEach(pauseOptions, id: \.self) { option in
                     pauseButton(for: option)
                 }
                 Spacer()
@@ -55,15 +56,19 @@ struct SettingsView: View {
     }
 
     private func pauseButton(for option: Int) -> some View {
-        Button(action: {
+        let isSelected = selectedPause == option
+        let backgroundColor: Color = isSelected ? .blue : (colorScheme == .dark ? .black : .white)
+        let textColor: Color = isSelected ? .white : (colorScheme == .dark ? .white : .black)
+
+        return Button(action: {
             selectedPause = option
             timerManager.initialTime = Double(option * 60)
         }) {
             Text("\(option)\nminutos")
                 .bold()
-                .foregroundColor(selectedPause == option ? .white : .black)
+                .foregroundColor(textColor)
                 .frame(width: 75, height: 75)
-                .background(selectedPause == option ? Color.blue : Color.gray.opacity(0.2))
+                .background(backgroundColor)
                 .cornerRadius(10)
         }
     }
@@ -72,7 +77,7 @@ struct SettingsView: View {
         Section(header: Text("Tempo do pomodoro").font(.headline)) {
             HStack {
                 Spacer()
-                ForEach(pomodoroOptions, id: \ .self) { option in
+                ForEach(pomodoroOptions, id: \.self) { option in
                     pomodoroButton(for: option)
                 }
                 Spacer()
@@ -81,15 +86,20 @@ struct SettingsView: View {
     }
 
     private func pomodoroButton(for option: Int) -> some View {
-        Button(action: {
+        let isSelected = selectedPomodoro == option
+        let backgroundColor: Color = isSelected ? .blue : (colorScheme == .dark ? .black : .white)
+        let textColor: Color = isSelected ? .white : (colorScheme == .dark ? .white : .black)
+
+        return Button(action: {
             selectedPomodoro = option
             timerManager.initialTime = Double(option * 60)
             timerManager.resetTimer()
         }) {
             Text("\(option)\nminutos")
-                .foregroundColor(selectedPomodoro == option ? .white : .black)
+                .bold()
+                .foregroundColor(textColor)
                 .frame(width: 75, height: 75)
-                .background(selectedPomodoro == option ? Color.blue : Color.gray.opacity(0.2))
+                .background(backgroundColor)
                 .cornerRadius(10)
         }
     }

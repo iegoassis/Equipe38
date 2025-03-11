@@ -10,7 +10,9 @@ import Charts
 struct Template: View{
     var ciclos: Int
     var cicloDiario: [PomodoroPoint]
-    @Binding var timerManager: TimerManager
+    @ObservedObject var timerManager: TimerManager
+    @ObservedObject var contarTempo: ContarTempo
+    @State var semanaEscolhida: Int = 0
     var body: some View {
         
         VStack {
@@ -34,10 +36,10 @@ struct Template: View{
                           )
                                                 
                         VStack(spacing:10){
-                            Text("Ciclos completos")
+                            Text("Ciclos de Foco completos")
                                 .font(.pomodoroUI(.satoshiBody2Medium))
                                 .foregroundColor(.white)
-                            Text("\(timerManager.ciclos)")
+                            Text("\(contarTempo.cicloFoco)")
                                 .font(.pomodoroUI(.satoshiBody1Medium))
                                 .foregroundColor(.white)
                             
@@ -53,10 +55,10 @@ struct Template: View{
                           .cornerRadius(25)
                         VStack(spacing:10){
                             
-                            Text("Duração dos ciclos")
+                            Text("Ciclos de Descanso completos")
                                 .font(.pomodoroUI(.satoshiBody2Medium))
                                 .foregroundColor(.white)
-                            Text("25 mins")
+                            Text("\(contarTempo.cicloDescanso)")
                                 .font(.pomodoroUI(.satoshiBody1Medium))
                                 .foregroundColor(.white)
                         }
@@ -69,12 +71,21 @@ struct Template: View{
             Text("Semanal")
                 .font(.pomodoroUI(.satoshiHeading3))
                 .frame(maxWidth: .infinity,alignment: .leading)
+            HStack {
+                Button(action: { semanaEscolhida -= 1 }) {
+                    Image(systemName: "chevron.left").padding()
+                }
+                Text("\(getWeekLabel())")
+                Button(action: { semanaEscolhida += 1 }) {
+                    Image(systemName: "chevron.right").padding()
+                }
+            }
             Chart(cicloDiario){ point in
                 BarMark(x: .value("Dia", formatDate(point.day)), y: .value("Ciclos",point.ciclos))
                 
             }
             .chartYAxis {
-                AxisMarks(position: .leading) // Isso move os rótulos para a esquerda
+                AxisMarks(position: .leading)
             }
             .frame(height:300)
             Text("Gráfico de desempenho")
@@ -86,6 +97,35 @@ struct Template: View{
         }
         .padding()
     }
+    private func getWeeklyData() -> [PomodoroPoint] {
+        let calendar = Calendar.current
+        let startOfWeek = calendar.date(byAdding: .weekOfYear, value: semanaEscolhida, to: Date())!
+            return (0..<7).map { offset in
+                let date = calendar.date(byAdding: .day, value: offset, to: startOfWeek)!
+                return cicloDiario.first { calendar.isDate($0.day, inSameDayAs: date) } ?? PomodoroPoint(day: date, ciclos: 0)
+            }
+        }
+
+        private func getWeekLabel() -> String {
+            let formatter = DateFormatter()
+            formatter.dateFormat = "MMM, yyyy"
+            return "\(semanaEscolhida + 1)º sem, \(formatter.string(from: Date()))"
+        }
+
+        private func getWeeklyTotal() -> Int {
+            return getWeeklyData().reduce(0) { $0 + $1.ciclos }
+        }
+
+        private func getWeeklyAverage() -> String {
+            let total = getWeeklyTotal()
+            let mediaMinutos = (total * 25) % 60
+            let mediaHoras = (total * 25) / 60
+            return "\(mediaHoras)h \(mediaMinutos)min"
+        }
+
+        private func getMaxCiclos() -> Int {
+            return getWeeklyData().max(by: { $0.ciclos < $1.ciclos })?.ciclos ?? 0
+        }
     private func formatDate(_ inputDate : Date) -> String{
         let formatter = DateFormatter()
         formatter.dateFormat = "dd/MM"

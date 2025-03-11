@@ -9,8 +9,8 @@ import SwiftUI
 
 struct SolarRays: View {
     var height: CGFloat
-    var timeRemaining: Int
-    var totalTime: Int
+    var timeRemaining: Double
+    var totalTime: Double
     
     @Binding var solarRayModel: SolarRayModel
     

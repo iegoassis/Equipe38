@@ -8,9 +8,12 @@ import SwiftUI
 
 struct PomodoroView: View {
     @State private var height: CGFloat?
-    @State private var solarRayViewModel: SolarRayViewModel  = .init(subdivisions: 8)
+    @StateObject private var solarRayViewModel: SolarRayViewModel  = .init(subdivisions: 8)
     
-    @Binding var timerManager: TimerManager
+    @ObservedObject var timerManager: TimerManager
+    @ObservedObject var contarTempo: ContarTempo
+    @ObservedObject var timerViewModel: TimerViewModel
+    @State var isRunning: Bool = false
     
     var body: some View {
         VStack {
@@ -20,10 +23,10 @@ struct PomodoroView: View {
             
             ZStack {
                 ForEach($solarRayViewModel.rays) { ray in
-                    SolarRays(height: height ?? 10, timeRemaining: Int(timerManager.timeRemaining), totalTime: Int(timerManager.initialTime), solarRayModel: ray)
+                    SolarRays(height: height ?? 10, timeRemaining: Double(timerManager.timeRemaining), totalTime: Double(timerManager.initialTime), solarRayModel: ray)
                 }
                 
-                CircleView(timerManager: $timerManager, height: $height)
+                CircleView(timerManager: timerManager, height: $height)
                     .frame(width: 200, height: 200)
                     .background {
                         Color.yellow
@@ -52,12 +55,13 @@ struct PomodoroView: View {
             Spacer()
         }
         .onAppear {
-            timerManager.startTimer()
+            timerManager.stopTimer()
         }
     }
     
     func toggleTimer() {
         if timerManager.timeRemaining <= 0 {
+            timerViewModel.mudarEstadoTimer()
             timerManager.resetTimer()
             for i in 0..<solarRayViewModel.rays.count {
                 solarRayViewModel.rays[i].initialSpacing = 0
@@ -73,7 +77,9 @@ struct PomodoroView: View {
 }
 
 #Preview {
-    let timerManager = TimerManager(initialTime: 20) // Removido TimerViewModel
-    return PomodoroView(timerManager: .constant(timerManager))
+//    @Previewable @StateObject var timerManager = TimerManager(initialTime: 20) // Removido TimerViewModel
+//    return PomodoroView(timerManager: $timerManager)
 }
+
+
 

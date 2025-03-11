@@ -10,7 +10,7 @@ import SwiftUI
 struct PomodoroApp: App {
     var body: some Scene {
         WindowGroup {
-            TabBar()
+            TabBar(contarTempo: ContarTempo(timerViewModel: TimerViewModel()))
         }
     }
 }

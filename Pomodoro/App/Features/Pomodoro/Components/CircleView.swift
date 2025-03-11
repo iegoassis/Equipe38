@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct CircleView: View {
-    @Binding var timerManager: TimerManager
+    @ObservedObject var timerManager: TimerManager
     @Binding var height: CGFloat?
     
     var body: some View {
@@ -29,10 +29,10 @@ struct CircleView: View {
 }
 
 #Preview {
-    let viewModel = TimerViewModel()
-    CircleView(timerManager: .constant(.init(initialTime: 20)), height: .constant(10))
-        .background {
-            Color.yellow
-                .clipShape(Circle())
-        }
+//    let viewModel = TimerViewModel()
+//    CircleView(timerManager: .constant(.init(initialTime: 20)), height: .constant(10))
+//        .background {
+//            Color.yellow
+//                .clipShape(Circle())
+//        }
 }

@@ -7,10 +7,10 @@
 
 import SwiftUI
 
-@Observable
-class SolarRayViewModel {
-    var rays: [SolarRayModel]
+class SolarRayViewModel: ObservableObject {
     
+    @Published var rays: [SolarRayModel] = []
+
     init(subdivisions: Int) {
         self.rays = []
         
@@ -29,3 +29,4 @@ extension Date {
         return String(format: "%02d:%02d", minutes, seconds)
     }
 }
+

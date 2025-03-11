@@ -15,10 +15,13 @@ class TimerViewModel: ObservableObject {
     @Published var tempoAtividade: Double = 100
     @Published var tempoDescanso: Double = 10
     @Published var timer: TimerManager
+    @Published var contarTempo: ContarTempo!
 
     init() {
-        self.timer = TimerManager(initialTime: 100)
-    }
+        let timer = TimerManager(initialTime:100)
+        self.timer = timer
+        self.contarTempo = ContarTempo(timerViewModel: self)
+       }
 
     func mudarEstadoTimer() {
         switch estadoTimer {
@@ -31,9 +34,12 @@ class TimerViewModel: ObservableObject {
             timer.stopTimer()
             timer = TimerManager(initialTime: tempoAtividade)
         }
+        contarTempo.contarCiclos()
     }
 
     func resetarTimer() {
         timer.resetTimer()
     }
 }
+
+

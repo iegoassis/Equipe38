@@ -16,7 +16,7 @@ struct HomeView: View {
     @Binding var contarTempo: ContarTempo
     @State private var completedCycles: [String] = []
     @State private var tempoInicial: Int = 0
-
+    
     var body: some View {
         VStack {
             Text("Pomodoro")
@@ -49,11 +49,14 @@ struct HomeView: View {
             timerManager.resetTimer()
             tempoInicial = tempoPersonalizado
         }
-        .onChange(of: $contarTempo.contarCiclos) { novoValor in
-            completedCycles.append("Ciclo \(novoValor) concluído em \(Date())")
+        .onChange(of: contarTempo.cicloFoco) {
+            completedCycles.append("Ciclo \(contarTempo.cicloFoco) concluído em \(Date())")
+        }
+        .onChange(of: contarTempo.cicloDescanso) {
+            completedCycles.append("Ciclo \(contarTempo.cicloDescanso) concluído em \(Date())")
         }
     }
-
+    
     func formatTime(_ seconds: Int) -> String {
         let minutes = seconds / 60
         let seconds = seconds % 60
@@ -62,7 +65,7 @@ struct HomeView: View {
 }
 
 #Preview {
-    TabBar()
+    TabBar(contarTempo: ContarTempo(timerViewModel: TimerViewModel()))
 }
 
 

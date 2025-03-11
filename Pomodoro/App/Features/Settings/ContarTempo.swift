@@ -8,8 +8,8 @@ import SwiftUI
 
 class ContarTempo: ObservableObject {
     var timerViewModel: TimerViewModel
-    var cicloDescanso: Int = 0
-    var cicloFoco: Int = 0
+    @Published var cicloDescanso: Int = 0
+    @Published var cicloFoco: Int = 0
     init(timerViewModel: TimerViewModel) {
         self.timerViewModel = timerViewModel
     }
@@ -24,3 +24,4 @@ class ContarTempo: ObservableObject {
         }
     }
 }
+
